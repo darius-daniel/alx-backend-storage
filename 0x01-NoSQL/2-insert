@@ -1,2 +1,2 @@
-// 2. Insert Document
-db.getName().school.insertOne({name: "Holberton school"});
+// 2. Insert 
+db.school.insertOne({name: "Holberton school"});
