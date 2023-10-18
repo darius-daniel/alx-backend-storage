@@ -1,2 +1,4 @@
 .idea
 *-main*
+.mypy_cache
+__pycache__

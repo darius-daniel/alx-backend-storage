@@ -2,7 +2,25 @@
 """Module containing classes"""
 import redis
 import uuid
-from typing import Union, Callable, Optional
+from typing import Any, Union, Callable, Optional
+from functools import wraps
+
+
+def count_calls(method: Callable) -> Callable:
+    """
+    Counts the number of times methods of the Cache class are called
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs) -> Any:
+        """
+        Increments the count for that key every time the method is called
+        and returns the value returned by the original method.
+        """
+        if isinstance(self._redis, redis.Redis):
+            self._redis.incr(method.__qualname__)
+        return method(self, *args, **kwargs)
+
+    return wrapper
 
 
 class Cache:
@@ -15,6 +33,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Generates a random key
