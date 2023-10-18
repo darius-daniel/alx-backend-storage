@@ -23,15 +23,22 @@ class Cache:
         self._redis.mset({str(key): data})
         return str(key)
 
-    def get(self, key: str, fn: Optional[Callable] = None) -> Union[str, int, None]:
+    def get(self, key: str,
+            fn: Optional[Callable] = None) -> Union[str, int, None]:
         """Performs some operation"""
         if fn is None:
             return None
 
         return fn(self._redis.get(key))
 
-    def get_str(self, key: str):
+    def get_str(self, key: str) -> Union[str, int, None]:
+        """
+        Automatically parametrize Cache.get() with the str function
+        """
         return self.get(key, str)
 
-    def get_int(self, key: str):
+    def get_int(self, key: str) -> Union[str, int, None]:
+        """
+        Automatically parameterize Cache.get() with the int function
+        """
         return self.get(key, int)
