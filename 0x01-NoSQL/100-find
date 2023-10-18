@@ -1,4 +1,5 @@
 // 13. Regex filter
+use db;
 db.school.find({
-    name: { $regex: '/^Holberton/' }
-})
+    name: { $regex: /^Holberton/ }
+});
