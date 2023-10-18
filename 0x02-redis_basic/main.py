@@ -25,5 +25,5 @@ TEST_CASES = {
 
 for value, fn in TEST_CASES.items():
     key = cache.store(value)
-    # assert cache.get(key, fn=fn) == value
-    print(cache.get(key, fn=fn))
+    assert cache.get(key, fn=fn) == value
+    # print(cache.get(key, fn=fn))

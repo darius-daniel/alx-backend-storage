@@ -27,7 +27,7 @@ class Cache:
             fn: Optional[Callable] = None) -> Union[str, int, None]:
         """Performs some operation"""
         if fn is None:
-            return None
+            return self._redis.get(key)
 
         return fn(self._redis.get(key))
 
