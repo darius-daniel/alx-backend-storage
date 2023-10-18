@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Module containing classes"""
+""" Module containing classes. """
 import redis
 import uuid
 from typing import Any, Union, Callable, Optional
@@ -7,9 +7,7 @@ from functools import wraps
 
 
 def count_calls(method: Callable) -> Callable:
-    """
-    Counts the number of times methods of the Cache class are called
-    """
+    """ Counts the number of times methods of the Cache class are called. """
     @wraps(method)
     def wrapper(self, *args, **kwargs) -> Any:
         """
@@ -24,14 +22,13 @@ def count_calls(method: Callable) -> Callable:
 
 
 def call_history(method: Callable) -> Callable:
-    """
-    Stores the history of inputs and outputs for a particular function
-    """
-    in_key = method.__qualname__ + ":inputs"
-    out_key = method.__qualname__ + ":outputs"
+    """ Stores the history of inputs and outputs for a particular function """
+    in_key = "{}:inputs".format(method.__qualname__)
+    out_key = "{}:outputs".format(method.__qualname__)
 
     @wraps(method)
     def wrapper(self, *args) -> Any:
+        """ A wrapper for method. """
         self._redis.rpush(in_key, str(args))
         output = method(self, *args)
         self._redis.rpush(out_key, str(output))
@@ -42,7 +39,7 @@ def call_history(method: Callable) -> Callable:
 
 
 class Cache:
-    """A Cache class"""
+    """ A Cache class. """
     def __init__(self) -> None:
         """
         Initialises a new Cache instance by storing a new instance of the
@@ -54,29 +51,23 @@ class Cache:
     @count_calls
     @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
-        """
-        Generates a random key
-        """
+        """ Generates a random key. """
         key = uuid.uuid4()
         self._redis.mset({str(key): data})
         return str(key)
 
     def get(self, key: str,
             fn: Optional[Callable] = None) -> Union[str, int, None]:
-        """Performs some operation"""
+        """ Performs some operation. """
         if fn is None:
             return self._redis.get(key)
 
         return fn(self._redis.get(key))
 
     def get_str(self, key: str) -> Union[str, int, None]:
-        """
-        Automatically parametrize Cache.get() with the str function
-        """
+        """ Automatically parametrize Cache.get() with the str function """
         return self.get(key, str)
 
     def get_int(self, key: str) -> Union[str, int, None]:
-        """
-        Automatically parameterize Cache.get() with the int function
-        """
+        """ Automatically parameterize Cache.get() with the int function. """
         return self.get(key, int)
