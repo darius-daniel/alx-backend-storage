@@ -1,5 +1,2 @@
 // 13. Regex filter
-use db;
-db.school.find({
-    name: { $regex: /Holberton.*/ }
-}).forEach(printjson);
+db.school.find({name: /Holberton.*/}).forEach(printjson);
