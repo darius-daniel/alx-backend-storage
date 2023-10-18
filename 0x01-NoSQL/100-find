@@ -1,5 +1,9 @@
 // 13. Regex filter
 use db;
-db.school.find({
+var cursor = db.school.find({
     name: { $regex: /^Holberton/ }
 });
+
+while (cursor.hasNext()) {
+  printjson(cursor.next());
+};
